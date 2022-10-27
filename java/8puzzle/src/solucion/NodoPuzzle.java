@@ -10,10 +10,18 @@ package solucion;
  */
 public class NodoPuzzle {
     private Integer puzzle[][];
-    private Integer padre[][];
-    private Integer gn;
-    private Integer hn;
-    private Integer fn;
+    private NodoPuzzle padre;
+    private Integer gn = 0;
+    private Integer hn = 0;
+    private Integer fn = gn + hn;
+
+    public NodoPuzzle getPadre() {
+        return padre;
+    }
+
+    public void setPadre(NodoPuzzle padre) {
+        this.padre = padre;
+    }
 
     public Integer[][] getPuzzle() {
         return puzzle;
@@ -21,14 +29,6 @@ public class NodoPuzzle {
 
     public void setPuzzle(Integer[][] puzzle) {
         this.puzzle = puzzle;
-    }
-
-    public Integer[][] getPadre() {
-        return padre;
-    }
-
-    public void setPadre(Integer[][] padre) {
-        this.padre = padre;
     }
 
     public Integer getGn() {
