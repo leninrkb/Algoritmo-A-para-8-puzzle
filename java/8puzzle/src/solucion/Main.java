@@ -42,6 +42,8 @@ public class Main {
                 ), 
                 raiz, 
                 puzzleObjetivo);
+        List<>
+        
         Utils.imprimirCamino(hijos.get(0));
 
     }
