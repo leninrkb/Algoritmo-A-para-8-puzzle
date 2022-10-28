@@ -71,6 +71,28 @@ public class Utils {
     }
 
     /**
+     * verifica si el nodo ya se expandio
+     * 
+     * @param lista lista de nodos en la que se buscara el nodo pasado comom parametro
+     * @param nodos nodo a buscar en la lista para saber si ya fue expandido
+     * @return falso si el nodo no se ha expandido antes, true si ya se ha expandido
+     */
+    static Boolean verificarRepetido(List<Integer[][]> estados, Integer[][] e){
+        int c=0;
+        for (Integer[][] estado : estados) {
+            for (int i = 0; i < estado.length; i++) {
+                if (estado[i] != e[i]) {
+                    c++;
+                }
+            }
+        }
+        if (c == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * mueve el cero hacia la izquierda y lo intercambia con el numero que haya
      * estado en esa posicion
      *
@@ -253,7 +275,7 @@ public class Utils {
             NodoPuzzle hijo = new NodoPuzzle();
             hijo.setPuzzle(nueva_matriz);
             hijo.setPadre(padre);
-            hijo.setHn(determinarEuristica(matriz_objetivo, nueva_matriz));
+            hijo.setHn(determinarEuristicaPosiciones(matriz_objetivo, nueva_matriz));
             hijo.setGn(determinarCosto(hijo, hijo.getGn()));
             hijo.setFn(determinarFn(hijo.getGn(), hijo.getHn()));
             hijos.add(hijo);
@@ -406,7 +428,14 @@ public class Utils {
     }
 
 
-    static Double determinarEuristicaEuclides(Integer[][] matriz_objetivo, Integer[][] matriz_actual) {
+    /**
+     * determina la distancia euclidiana de cada punto
+     *
+     * @param matriz_objetivo[][] matriz a la cual se desea llegar
+     * @param matriz_actual[][]   matriz en la que se encuentra en el momento
+     * @return la euristica en funcion de las matrices
+     */
+    static Integer determinarEuristicaEuclides(Integer[][] matriz_objetivo, Integer[][] matriz_actual) {
         Integer[] vec_obj = pasarMatrizVector(matriz_objetivo);
         Integer[] vec_act = pasarMatrizVector(matriz_actual);
         Integer longitud = vec_obj.length;
@@ -421,6 +450,30 @@ public class Utils {
                         break;
                     }
                 }
+            }
+        }
+        String str = String.valueOf(Math.round(hn));
+        Integer hnEntero = Integer.valueOf(str);
+        return hnEntero;
+    }
+
+
+    /**
+     * determina los espacios errones de cada dato
+     *
+     * @param matriz_objetivo[][] matriz a la cual se desea llegar
+     * @param matriz_actual[][]   matriz en la que se encuentra en el momento
+     * @return la euristica en funcion de las matrices
+     */
+    static Integer determinarEuristicaPosiciones(Integer[][] matriz_objetivo, Integer[][] matriz_actual) {
+        Integer[] vec_obj = pasarMatrizVector(matriz_objetivo);
+        Integer[] vec_act = pasarMatrizVector(matriz_actual);
+        Integer longitud = vec_obj.length;
+        Integer hn = 0;
+
+        for (int i = 0; i < longitud; i++) {
+            if (vec_obj[i] != vec_act[i]) {
+                hn++;
             }
         }
         return hn;
@@ -488,5 +541,17 @@ public class Utils {
             paraImprimir.add(nodo);
             ordenarCamino(nodo.getPadre());
         }
+    }
+
+    static void imprimirListaNodos(List<NodoPuzzle> lista){
+        System.out.println("--------------------- inicio impresion lista nodos ---------------------");
+        for (NodoPuzzle nodoPuzzle : lista) {
+            imprimirMatriz(nodoPuzzle.getPuzzle());
+            System.out.print("gn: " + nodoPuzzle.getGn() + " / ");
+            System.out.print("hn: " + nodoPuzzle.getHn() + " / ");
+            System.out.print("fn: " + nodoPuzzle.getFn());
+            System.out.println("\n");
+        }
+        System.out.println("--------------------- fin inicio impresion lista nodos ---------------------");
     }
 }
