@@ -9,19 +9,17 @@ public class Main {
 
     public static void main(String[] args) {
         Integer[][] puzzleInicial = {
-                { 1, 2, 0 },
-                { 3, 4, 5 },
-                { 6, 7, 8 } };
+            { 1, 4, 2 },
+            { 3, 5, 8 },
+            { 6, 0, 7 } };
+        // Integer[][] puzzleInicial = {
+        //     { 3, 1, 2 },
+        //     { 4, 7, 0 },
+        //     { 6, 8, 5 } };
         Integer[][] puzzleObjetivo = {
                 { 0, 1, 2 },
                 { 3, 4, 5 },
                 { 6, 7, 8 } };
-
-        // if (Utils.esSolucionable(puzzleInicial)) {
-        //     System.out.println("Solvable");
-        // } else {
-        //     System.out.println("Not Solvable");
-        // }
 
         // nodo raiz/padre con el estado inicial
         NodoPuzzle raiz = new NodoPuzzle();
@@ -36,7 +34,9 @@ public class Main {
         int i = 0;
         NodoPuzzle nodoExpandir = raiz;
         do {
-
+            if (nodoExpandir.getHn() == 0) {
+                break;
+            }
             List<NodoPuzzle> hijos = Utils.generarHijos(
                     Utils.generarEstadosPosibles(Utils.copiarMatriz(nodoExpandir.getPuzzle()),
                             Utils.determinarPosCero(nodoExpandir.getPuzzle())),
@@ -46,14 +46,11 @@ public class Main {
             Utils.agregarHijosLista(todosHijos, hijos);
             nodoExpandir = Utils.determinarNodoExpandir(todosHijos);
             Utils.eliminarHijoLista(todosHijos, nodoExpandir);
+        } while (true);
 
-            i++;
-            System.out.println(i);
-        //} while (i < 10000);
-        } while (Utils.determinarEuristica(nodoExpandir.getPuzzle(), puzzleObjetivo) != 0);
 
-        //Integer in = Utils.determinarCosto(nodoExpandir, nodoExpandir.getGn());
-        //System.out.println("costo " + in);
+        // Integer in = Utils.determinarCosto(nodoExpandir, nodoExpandir.getGn());
+        // System.out.println("costo " + in);
         Utils.imprimirCamino(nodoExpandir);
 
     }

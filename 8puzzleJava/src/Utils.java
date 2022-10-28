@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
 
 /**
  *
@@ -453,14 +452,6 @@ public class Utils {
     static private List<NodoPuzzle> paraImprimir = new ArrayList<>();
     static void imprimirCamino(NodoPuzzle nodo) {
         ordenarCamino(nodo);
-
-        // for (NodoPuzzle nodoPuzzle : paraImprimir) {
-        //     imprimirMatriz(nodoPuzzle.getPuzzle());
-        //     System.out.print("gn: " + nodoPuzzle.getGn() + " / ");
-        //     System.out.print("hn: " + nodoPuzzle.getHn() + " / ");
-        //     System.out.print("fn: " + nodoPuzzle.getFn());
-        //     System.out.println("\n");
-        // }
 
         for (int i = paraImprimir.size()-1; i >= 0; i--) {
             imprimirMatriz(paraImprimir.get(i).getPuzzle());
