@@ -33,25 +33,31 @@ public class Main {
 
         int i = 0;
         NodoPuzzle nodoExpandir = raiz;
-        do {
-            if (nodoExpandir.getHn() == 0) {
-                break;
-            }
-            List<NodoPuzzle> hijos = Utils.generarHijos(
-                    Utils.generarEstadosPosibles(Utils.copiarMatriz(nodoExpandir.getPuzzle()),
-                            Utils.determinarPosCero(nodoExpandir.getPuzzle())),
-                    nodoExpandir,
-                    puzzleObjetivo);
+        // do {
+        //     if (nodoExpandir.getHn() == 0) {
+        //         break;
+        //     }
+        //     List<NodoPuzzle> hijos = Utils.generarHijos(
+        //             Utils.generarEstadosPosibles(Utils.copiarMatriz(nodoExpandir.getPuzzle()),
+        //                     Utils.determinarPosCero(nodoExpandir.getPuzzle())),
+        //             nodoExpandir,
+        //             puzzleObjetivo);
 
-            Utils.agregarHijosLista(todosHijos, hijos);
-            nodoExpandir = Utils.determinarNodoExpandir(todosHijos);
-            Utils.eliminarHijoLista(todosHijos, nodoExpandir);
-        } while (true);
+        //     Utils.agregarHijosLista(todosHijos, hijos);
+        //     nodoExpandir = Utils.determinarNodoExpandir(todosHijos);
+        //     Utils.eliminarHijoLista(todosHijos, nodoExpandir);
+        // } while (true);
 
 
         // Integer in = Utils.determinarCosto(nodoExpandir, nodoExpandir.getGn());
         // System.out.println("costo " + in);
         Utils.imprimirCamino(nodoExpandir);
+
+        Integer qwe = Utils.determinarEuristica(puzzleObjetivo, puzzleInicial);
+
+        Double asd = Utils.determinarEuristicaEuclides(puzzleObjetivo, puzzleInicial);
+        System.out.println("eu: " + asd);
+        System.out.println("man: " + qwe);
 
     }
 }

@@ -405,6 +405,27 @@ public class Utils {
         return hn;
     }
 
+
+    static Double determinarEuristicaEuclides(Integer[][] matriz_objetivo, Integer[][] matriz_actual) {
+        Integer[] vec_obj = pasarMatrizVector(matriz_objetivo);
+        Integer[] vec_act = pasarMatrizVector(matriz_actual);
+        Integer longitud = vec_obj.length;
+        Double hn = 0.0;
+
+        for (int i = 0; i < longitud; i++) {
+            if (vec_obj[i] != vec_act[i]) {
+                for (int j = 0; j < longitud; j++) {
+                    if (vec_obj[i] == vec_act[j]) {
+                        Double d = Double.valueOf(j-i);
+                        hn += Math.sqrt(Math.pow(d, 2));
+                        break;
+                    }
+                }
+            }
+        }
+        return hn;
+    }
+
     /**
      * algoritmo que determina si la matriz
      *
