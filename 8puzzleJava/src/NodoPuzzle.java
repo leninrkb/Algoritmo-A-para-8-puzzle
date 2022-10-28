@@ -6,9 +6,9 @@
 public class NodoPuzzle {
     private Integer puzzle[][];
     private NodoPuzzle padre;
-    private Integer gn = 0;
-    private Integer hn = 0;
-    private Integer fn = gn + hn;
+    private Integer gn=0;
+    private Integer hn=0;
+    private Integer fn=0;
 
     public NodoPuzzle getPadre() {
         return padre;

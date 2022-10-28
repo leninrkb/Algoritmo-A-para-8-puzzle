@@ -1,18 +1,65 @@
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.ParagraphAction;
+
 /**
  *
  * @author lenin
  */
 public class Utils {
-    
+
+    /**
+     * copia todos los elementos de una lista a otra con una nueva referencia
+     * 
+     * @param lista lista a copiar
+     * @return lista con elentos copiados
+     */
+    static List<NodoPuzzle> copiarLista(List<NodoPuzzle> lista) {
+        List<NodoPuzzle> nueva = new ArrayList<>();
+        for (NodoPuzzle nodoPuzzle : lista) {
+            nueva.add(nodoPuzzle);
+        }
+        return nueva;
+    }
+
+    /**
+     * agrega los elementos de una lista muestra a una lista general
+     * para llevar cuenta de todos los nodos hijos
+     * 
+     * @param lista_general lista con todos los hijos
+     * @param lista_muestra lista con los hijos de un nodo
+     * @return void
+     */
+    static void agregarHijosLista(List<NodoPuzzle> lista_general, List<NodoPuzzle> lista_muestra) {
+        for (NodoPuzzle nodoPuzzle : lista_muestra) {
+            lista_general.add(nodoPuzzle);
+        }
+    }
+
+    /**
+     * elimina el nodo que sea igual a que se pasa por parametro
+     * 
+     * @param lista_general lista con todos los hijos
+     * @param eliminar      nodo a compara y eliminar desntro de la lista general
+     * @return void
+     */
+    static void eliminarHijoLista(List<NodoPuzzle> lista_general, NodoPuzzle eliminar) {
+        for (NodoPuzzle nodoPuzzle : lista_general) {
+            if (nodoPuzzle == eliminar) {
+                lista_general.remove(nodoPuzzle);
+                break;
+            }
+        }
+    }
+
     /**
      * determina el nodo con menor F(n) de la lista de nodos
-     * @param nodos lista de nodos 
+     * 
+     * @param nodos lista de nodos
      * @return nodo
      */
-    static NodoPuzzle determinarNodoExpandir(List<NodoPuzzle> nodos){
+    static NodoPuzzle determinarNodoExpandir(List<NodoPuzzle> nodos) {
         Integer menor_fn = nodos.get(0).getFn();
         NodoPuzzle menor = nodos.get(0);
         for (NodoPuzzle nodo : nodos) {
@@ -180,23 +227,36 @@ public class Utils {
         }
         return lista;
     }
-    
+
+    /**
+     * calcula fn
+     * 
+     * @param gn costo para el siguiente estado
+     * @param hn costo en funcion del objetivo
+     * @return fn costo total del camino
+     */
+    static Integer determinarFn(Integer gn, Integer hn) {
+        return gn + hn;
+    }
+
     /**
      * genera los objetos hijos de tipo NodoPuzzle
      * con referencia al padre
-     * @param lista matrices
-     * @param padre nodo que le precede
+     * 
+     * @param lista           matrices
+     * @param padre           nodo que le precede
      * @param matriz_objetivo matriz solucion
      * @return lista con los hijos generado
      */
-    static List<NodoPuzzle> generarHijos(List<Integer[][]> lista, NodoPuzzle padre, Integer[][] matriz_objetivo){
+    static List<NodoPuzzle> generarHijos(List<Integer[][]> lista, NodoPuzzle padre, Integer[][] matriz_objetivo) {
         List<NodoPuzzle> hijos = new ArrayList<>();
         for (Integer[][] nueva_matriz : lista) {
             NodoPuzzle hijo = new NodoPuzzle();
             hijo.setPuzzle(nueva_matriz);
             hijo.setPadre(padre);
-            hijo.setHn(Utils.determinarEuristica(matriz_objetivo, nueva_matriz));
-            hijo.setGn(Utils.determinarCosto(hijo));
+            hijo.setHn(determinarEuristica(matriz_objetivo, nueva_matriz));
+            hijo.setGn(determinarCosto(hijo, hijo.getGn()));
+            hijo.setFn(determinarFn(hijo.getGn(), hijo.getHn()));
             hijos.add(hijo);
         }
         return hijos;
@@ -302,11 +362,10 @@ public class Utils {
      * @param nodo
      * @return costo del camino
      */
-    static Integer determinarCosto(NodoPuzzle nodo) {
-        Integer gn = 0;
+    static Integer determinarCosto(NodoPuzzle nodo, Integer gn) {
+        gn++;
         if (nodo.getPadre() != null) {
-            gn++;
-            determinarCosto(nodo.getPadre());
+            return determinarCosto(nodo.getPadre(), gn);
         }
         return gn;
     }
@@ -318,7 +377,7 @@ public class Utils {
      * la var hn sigue aumentando
      *
      * @param matriz_objetivo[][] matriz a la cual se desea llegar
-     * @param matriz_actual[][] matriz en la que se encuentra en el momento
+     * @param matriz_actual[][]   matriz en la que se encuentra en el momento
      * @return la euristica en funcion de las matrices
      */
     static Integer determinarEuristica(Integer[][] matriz_objetivo, Integer[][] matriz_actual) {
@@ -391,11 +450,31 @@ public class Utils {
         }
     }
 
+    static private List<NodoPuzzle> paraImprimir = new ArrayList<>();
     static void imprimirCamino(NodoPuzzle nodo) {
-        if (nodo.getPuzzle() != null && nodo.getPadre()!=null) {
-            imprimirMatriz(nodo.getPuzzle());
-            System.out.println("");
-            imprimirCamino(nodo.getPadre());
+        ordenarCamino(nodo);
+
+        // for (NodoPuzzle nodoPuzzle : paraImprimir) {
+        //     imprimirMatriz(nodoPuzzle.getPuzzle());
+        //     System.out.print("gn: " + nodoPuzzle.getGn() + " / ");
+        //     System.out.print("hn: " + nodoPuzzle.getHn() + " / ");
+        //     System.out.print("fn: " + nodoPuzzle.getFn());
+        //     System.out.println("\n");
+        // }
+
+        for (int i = paraImprimir.size()-1; i >= 0; i--) {
+            imprimirMatriz(paraImprimir.get(i).getPuzzle());
+            System.out.print("gn: " + paraImprimir.get(i).getGn() + " / ");
+            System.out.print("hn: " + paraImprimir.get(i).getHn() + " / ");
+            System.out.print("fn: " + paraImprimir.get(i).getFn());
+            System.out.println("\n");
+        }
+    }
+
+    static void ordenarCamino(NodoPuzzle nodo) {
+        if (nodo.getPuzzle() != null && nodo.getPadre() != null) {
+            paraImprimir.add(nodo);
+            ordenarCamino(nodo.getPadre());
         }
     }
 }
