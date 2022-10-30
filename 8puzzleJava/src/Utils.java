@@ -1,6 +1,6 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
 
 /**
  *
@@ -73,12 +73,13 @@ public class Utils {
     /**
      * verifica si el nodo ya se expandio
      * 
-     * @param lista lista de nodos en la que se buscara el nodo pasado comom parametro
+     * @param lista lista de nodos en la que se buscara el nodo pasado comom
+     *              parametro
      * @param nodos nodo a buscar en la lista para saber si ya fue expandido
      * @return falso si el nodo no se ha expandido antes, true si ya se ha expandido
      */
-    static Boolean verificarRepetido(List<Integer[][]> estados, Integer[][] e){
-        int c=0;
+    static Boolean verificarRepetido(List<Integer[][]> estados, Integer[][] e) {
+        int c = 0;
         for (Integer[][] estado : estados) {
             for (int i = 0; i < estado.length; i++) {
                 if (estado[i] != e[i]) {
@@ -90,6 +91,24 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    /**
+     * busca estados repetidos dentro de la lista
+     * 
+     * @param lista lista de nodos
+     * @return falso si el nodo no se ha expandido antes, true si ya se ha expandido
+     */
+    static void verificarTodosHijos(List<NodoPuzzle> lista) {
+        HashMap<Integer[][], String> mapa = new HashMap<>();
+        for (NodoPuzzle nodo : lista) {
+            if (!mapa.containsValue(nodo.getPuzzle())) {
+                mapa.put(nodo.getPuzzle(), "");
+            } else {
+                lista.remove(nodo);
+            }
+        }
+        mapa.clear();
     }
 
     /**
@@ -427,7 +446,6 @@ public class Utils {
         return hn;
     }
 
-
     /**
      * determina la distancia euclidiana de cada punto
      *
@@ -445,7 +463,7 @@ public class Utils {
             if (vec_obj[i] != vec_act[i]) {
                 for (int j = 0; j < longitud; j++) {
                     if (vec_obj[i] == vec_act[j]) {
-                        Double d = Double.valueOf(j-i);
+                        Double d = Double.valueOf(j - i);
                         hn += Math.sqrt(Math.pow(d, 2));
                         break;
                     }
@@ -456,7 +474,6 @@ public class Utils {
         Integer hnEntero = Integer.valueOf(str);
         return hnEntero;
     }
-
 
     /**
      * determina los espacios errones de cada dato
@@ -524,16 +541,20 @@ public class Utils {
     }
 
     static private List<NodoPuzzle> paraImprimir = new ArrayList<>();
+
     static void imprimirCamino(NodoPuzzle nodo) {
         ordenarCamino(nodo);
-
-        for (int i = paraImprimir.size()-1; i >= 0; i--) {
-            imprimirMatriz(paraImprimir.get(i).getPuzzle());
-            System.out.print("gn: " + paraImprimir.get(i).getGn() + " / ");
-            System.out.print("hn: " + paraImprimir.get(i).getHn() + " / ");
-            System.out.print("fn: " + paraImprimir.get(i).getFn());
-            System.out.println("\n");
+        for (int i = paraImprimir.size() - 1; i >= 0; i--) {
+            imprimirNodo(paraImprimir.get(i));
         }
+    }
+
+    static void imprimirNodo(NodoPuzzle n) {
+        imprimirMatriz(n.getPuzzle());
+        System.out.print("gn: " + n.getGn() + " / ");
+        System.out.print("hn: " + n.getHn() + " / ");
+        System.out.print("fn: " + n.getFn());
+        System.out.println("\n");
     }
 
     static void ordenarCamino(NodoPuzzle nodo) {
@@ -543,14 +564,10 @@ public class Utils {
         }
     }
 
-    static void imprimirListaNodos(List<NodoPuzzle> lista){
+    static void imprimirListaNodos(List<NodoPuzzle> lista) {
         System.out.println("--------------------- inicio impresion lista nodos ---------------------");
         for (NodoPuzzle nodoPuzzle : lista) {
-            imprimirMatriz(nodoPuzzle.getPuzzle());
-            System.out.print("gn: " + nodoPuzzle.getGn() + " / ");
-            System.out.print("hn: " + nodoPuzzle.getHn() + " / ");
-            System.out.print("fn: " + nodoPuzzle.getFn());
-            System.out.println("\n");
+            imprimirNodo(nodoPuzzle);
         }
         System.out.println("--------------------- fin inicio impresion lista nodos ---------------------");
     }
